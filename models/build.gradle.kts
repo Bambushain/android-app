@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "app.bambushain.models"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 30
@@ -25,9 +25,9 @@ android {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.13.1")
     //noinspection AnnotationProcessorOnCompilePath
-    implementation("org.projectlombok:lombok:1.18.36")
+    implementation("org.projectlombok:lombok:1.18.38")
 
-    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
 }
