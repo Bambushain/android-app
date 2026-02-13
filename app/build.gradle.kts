@@ -74,7 +74,7 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":models"))
 
-    implementation("androidx.activity:activity:1.12.3")
+    implementation("androidx.activity:activity:1.12.4")
     implementation("androidx.annotation:annotation:1.9.1")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
