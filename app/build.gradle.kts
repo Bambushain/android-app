@@ -93,7 +93,7 @@ dependencies {
     implementation("com.github.requery:sqlite-android:3.49.0")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("com.google.android.material:material:1.13.0")
-    implementation("com.google.dagger:hilt-android:2.59.1")
+    implementation("com.google.dagger:hilt-android:2.59.2")
     implementation("com.launchdarkly:okhttp-eventsource:4.2.0")
     implementation("com.squareup.retrofit2:adapter-rxjava3:3.0.0")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
@@ -104,6 +104,6 @@ dependencies {
 
     annotationProcessor("androidx.databinding:databinding-compiler:9.0.1")
     annotationProcessor("androidx.room:room-compiler:2.8.4")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.59.1")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.59.2")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
 }
