@@ -30,7 +30,7 @@ dependencies {
 
     implementation("androidx.preference:preference:1.2.1")
     implementation("com.google.code.gson:gson:2.13.2")
-    implementation("com.google.dagger:hilt-android:2.59.1")
+    implementation("com.google.dagger:hilt-android:2.59.2")
     implementation("com.launchdarkly:okhttp-eventsource:4.2.0")
     implementation("com.squareup.okhttp3:okhttp:5.3.2")
     implementation("com.squareup.retrofit2:adapter-rxjava3:3.0.0")
@@ -44,6 +44,6 @@ dependencies {
     //noinspection AnnotationProcessorOnCompilePath
     implementation("org.projectlombok:lombok:1.18.42")
 
-    annotationProcessor("com.google.dagger:hilt-compiler:2.59.1")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.59.2")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
 }
