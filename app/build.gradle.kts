@@ -100,10 +100,10 @@ dependencies {
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
     implementation("io.reactivex.rxjava3:rxjava:3.1.12")
     //noinspection AnnotationProcessorOnCompilePath
-    implementation("org.projectlombok:lombok:1.18.42")
+    implementation("org.projectlombok:lombok:1.18.44")
 
     annotationProcessor("androidx.databinding:databinding-compiler:9.1.0")
     annotationProcessor("androidx.room:room-compiler:2.8.4")
     annotationProcessor("com.google.dagger:hilt-compiler:2.59.2")
-    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
 }
