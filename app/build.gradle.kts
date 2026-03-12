@@ -78,7 +78,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.9.1")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.core:core:1.17.0")
+    implementation("androidx.core:core:1.18.0")
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.lifecycle:lifecycle-livedata:2.10.0")
     implementation("androidx.fragment:fragment:1.8.9")
