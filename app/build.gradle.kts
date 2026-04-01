@@ -94,7 +94,7 @@ dependencies {
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("com.google.android.material:material:1.13.0")
     implementation("com.google.dagger:hilt-android:2.59.2")
-    implementation("com.launchdarkly:okhttp-eventsource:4.2.0")
+    implementation("com.launchdarkly:okhttp-eventsource:4.3.0")
     implementation("com.squareup.retrofit2:adapter-rxjava3:3.0.0")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
