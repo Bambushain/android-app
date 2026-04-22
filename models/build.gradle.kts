@@ -27,7 +27,7 @@ android {
 dependencies {
     implementation("com.google.code.gson:gson:2.13.2")
     //noinspection AnnotationProcessorOnCompilePath
-    implementation("org.projectlombok:lombok:1.18.44")
+    implementation("org.projectlombok:lombok:1.18.46")
 
-    annotationProcessor("org.projectlombok:lombok:1.18.44")
+    annotationProcessor("org.projectlombok:lombok:1.18.46")
 }
