@@ -29,7 +29,7 @@ dependencies {
     implementation(project(":models"))
 
     implementation("androidx.preference:preference:1.2.1")
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
     implementation("com.google.dagger:hilt-android:2.59.2")
     implementation("com.launchdarkly:okhttp-eventsource:4.3.0")
     implementation("com.squareup.okhttp3:okhttp:5.3.2")
