@@ -1,29 +1,56 @@
 plugins {
-    id("com.android.application")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.dependency.analysis)
 }
 
-val bambooMajorVersion: String by project
-val bambooMinorVersion: String by project
+fun computeVersionName(): String {
+    return System.getenv("CI_COMMIT_TAG") ?: "0.0.0"
+}
 
 fun computeVersionCode(): Int {
-    val bambooReleaseVersion = System.getenv("CI_PIPELINE_IID") ?: "1"
+    val versionSplit = (System.getenv("CI_COMMIT_TAG") ?: "0.0.0").split(".")
+    if (versionSplit.size != 3) {
+        throw IllegalArgumentException("The version tag needs to be in the format major.minor.patch")
+    }
+
+    val major = versionSplit[0]
+    val minor = versionSplit[1]
+    val patch = versionSplit[2]
+
     val versionCode =
-        ((bambooMajorVersion.toInt() * 100000) + (bambooMinorVersion.toInt() * 10000) + bambooReleaseVersion.toInt())
+        buildString {
+            append("10")
+            append(
+                ((major.toInt() * 100000) + (minor.toInt() * 10000) + patch.toInt()).toString(
+                    10
+                )
+            )
+        }.toInt()
+
+    print("Versionname is ${major}.${minor}.${patch}")
+    print("Versioncode is $versionCode")
 
     return versionCode
 }
 
 android {
     namespace = "app.bambushain"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "app.bambushain"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = computeVersionCode()
-        versionName = "$bambooMajorVersion.$bambooMinorVersion"
+        versionName = computeVersionName()
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     signingConfigs {
@@ -44,66 +71,71 @@ android {
         }
         getByName("release") {
             isDebuggable = false
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             isCrunchPngs = true
-            isShrinkResources = false
+            isShrinkResources = true
             isProfileable = false
             isJniDebuggable = false
             signingConfig = signingConfigs.getByName("release")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "src/main/proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_23
+        targetCompatibility = JavaVersion.VERSION_23
     }
+
     buildFeatures {
-        viewBinding = true
-        dataBinding = true
+        compose = true
     }
-    lint {
-        disable += listOf("CheckResult", "ResultOfMethodCallIgnored")
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlin.orNull
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":models"))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.animation.graphics)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation("androidx.activity:activity:1.13.0")
-    implementation("androidx.annotation:annotation:1.10.0")
-    implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.core:core:1.18.0")
-    implementation("androidx.core:core-splashscreen:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-livedata:2.10.0")
-    implementation("androidx.fragment:fragment:1.8.9")
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.10.0")
-    implementation("androidx.navigation:navigation-fragment:2.9.8")
-    implementation("androidx.navigation:navigation-ui:2.9.8")
-    implementation("androidx.preference:preference:1.2.1")
-    implementation("androidx.room:room-runtime:2.8.4")
-    implementation("androidx.room:room-rxjava3:2.8.4")
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
-    implementation("com.github.requery:sqlite-android:3.49.0")
-    implementation("com.google.android.flexbox:flexbox:3.0.0")
-    implementation("com.google.android.material:material:1.14.0")
-    implementation("com.google.dagger:hilt-android:2.59.2")
-    implementation("com.launchdarkly:okhttp-eventsource:4.3.0")
-    implementation("com.squareup.retrofit2:adapter-rxjava3:3.0.0")
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
-    implementation("io.reactivex.rxjava3:rxjava:3.1.12")
-    //noinspection AnnotationProcessorOnCompilePath
-    implementation("org.projectlombok:lombok:1.18.46")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
 
-    annotationProcessor("androidx.databinding:databinding-compiler:9.2.1")
-    annotationProcessor("androidx.room:room-compiler:2.8.4")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.59.2")
-    annotationProcessor("org.projectlombok:lombok:1.18.46")
+    implementation(platform(libs.io.insert.koin.koin.bom))
+    implementation(libs.io.insert.koin.koin.core)
+    implementation(libs.io.insert.koin.koin.compose)
+    implementation(libs.io.insert.koin.koin.android)
+
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.datetime)
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.serialization.json)
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core)
+    runtimeOnly(libs.org.jetbrains.kotlinx.kotlinx.coroutines.android)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.fcm)
+    implementation(libs.play.services.code.scanner)
+
+    implementation(platform(libs.retrofit2.bom))
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.converter.kotlinx)
+
+    implementation(libs.accompanist.permissions)
 }

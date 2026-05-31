@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Bambushain</string>
-    <string name="label_login">Melde dich an</string>
-    <string name="label_event_calendar">Event Kalender</string>
-    <string name="label_pandas">Pandas</string>
-    <string name="label_my_profile">Mein Profil</string>
-    <string name="label_characters">Charaktere</string>
-    <string name="label_edit_my_profile">Profil bearbeiten</string>
-</resources>
