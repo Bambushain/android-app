@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Bambushain"
+include(":api")
 include(":app")

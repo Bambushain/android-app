@@ -12,7 +12,6 @@ coroutines = "1.11.0"
 accompanist = "0.37.3"
 googleServices = "4.4.4"
 firebaseBom = "34.14.0"
-playServicesCodeScanner = "16.1.0"
 retrofit2 = "3.0.0"
 adaptiveNavigation = "1.2.0"
 dependencyAnalysis = "3.14.0"
@@ -55,14 +54,14 @@ org-jetbrains-kotlinx-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-fcm = { group = "com.google.firebase", name = "firebase-messaging" }
 
-play-services-code-scanner = { group = "com.google.android.gms", name = "play-services-code-scanner", version.ref = "playServicesCodeScanner" }
-
 retrofit2-bom = { group = "com.squareup.retrofit2", name = "retrofit-bom", version.ref = "retrofit2" }
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit" }
 retrofit2-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization" }
+retrofit2-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }

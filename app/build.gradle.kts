@@ -56,7 +56,10 @@ android {
     signingConfigs {
         create("release") {
             storeFile =
-                file(System.getenv("ANDROID_KEY_STOREFILE") ?: "/opt/secure/signing-key-bambushain.jks")
+                file(
+                    System.getenv("ANDROID_KEY_STOREFILE")
+                        ?: "/opt/secure/signing-key-bambushain.jks"
+                )
             storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
             keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "key0"
             keyPassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
@@ -106,6 +109,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":api"))
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.animation.graphics)
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
@@ -131,11 +136,5 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.fcm)
-    implementation(libs.play.services.code.scanner)
-
-    implementation(platform(libs.retrofit2.bom))
-    implementation(libs.retrofit2)
-    implementation(libs.retrofit2.converter.kotlinx)
-
     implementation(libs.accompanist.permissions)
 }
