@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -96,6 +99,11 @@ fun ForgotPasswordScreen(
                     value = email,
                     onValueChange = { email = it },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                    keyboardActions = KeyboardActions(
+                        {
+                            requestLink()
+                        }
+                    ),
                 )
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -127,8 +135,10 @@ fun LoginScreen(
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current;
+    val focusManager = LocalFocusManager.current
 
     val login = {
+        focusManager.clearFocus()
         coroutineScope.launch {
             if (!loginInProgress) {
                 val result = authenticationApi.login(Login(email, password))
@@ -185,6 +195,8 @@ fun LoginScreen(
                     value = email,
                     onValueChange = { email = it },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                    keyboardActions = KeyboardActions({ focusManager.moveFocus(FocusDirection.Down) }),
+                    singleLine = true
                 )
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -193,6 +205,14 @@ fun LoginScreen(
                     onValueChange = { password = it },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
+                    keyboardActions = KeyboardActions({
+                        if (!loginInProgress) {
+                            login()
+                        } else {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    }),
+                    singleLine = true
                 )
                 if (loginInProgress) {
                     TextField(
@@ -201,6 +221,14 @@ fun LoginScreen(
                         value = twoFactorCode,
                         onValueChange = { twoFactorCode = it },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        keyboardActions = KeyboardActions(
+                            {
+                                if (loginInProgress) {
+                                    login()
+                                }
+                            }
+                        ),
+                        singleLine = true
                     )
                 }
                 Row(
