@@ -3,7 +3,6 @@ package app.bambushain
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,10 +14,16 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.bambushain.api.AuthenticationApi
+import app.bambushain.composables.LoginScreen
 import app.bambushain.theme.BambooTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -57,10 +62,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+enum class Screens {
+    Login,
+    Calendar,
+    Pandas,
+    Characters,
+    MyProfile
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainComposable(
-    context: Context = koinInject(),
+    authenticationApi: AuthenticationApi = koinInject()
 ) {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
@@ -77,26 +90,48 @@ fun MainComposable(
         }
     }
 
+    var startDestination by remember { mutableStateOf(Screens.Login.name) }
+
+    var checkingToken by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        startDestination = if (authenticationApi.checkToken().isSuccessful) {
+            Screens.Calendar.name
+        } else {
+            Screens.Login.name
+        }
+        checkingToken = false
+    }
+
     val navHost = @Composable {
         NavHost(
             navController = navController,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
-            startDestination = "",
+            startDestination = startDestination,
         ) {
+            composable(Screens.Login.name) {
+                LoginScreen(navController)
+            }
+            composable(Screens.Calendar.name) { }
+            composable(Screens.Pandas.name) { }
+            composable(Screens.Characters.name) { }
+            composable(Screens.MyProfile.name) { }
         }
     }
-    val showNavigation = setOf("").contains(navController.currentDestination ?: "")
+    val hideNavigation = setOf(Screens.Login.name).contains(navController.currentDestination?.route ?: "")
 
-    BambooTheme {
-        if (showNavigation) {
-            navHost()
-        } else {
-            NavigationSuiteScaffold(
-                navigationItems = {
-                }
-            ) {
+    if (!checkingToken) {
+        BambooTheme {
+            if (hideNavigation) {
                 navHost()
+            } else {
+                NavigationSuiteScaffold(
+                    navigationItems = {
+                    }
+                ) {
+                    navHost()
+                }
             }
         }
     }

@@ -40,7 +40,7 @@ fun Context.setBambooToken(token: String) {
     }
 }
 
-val module = module {
+val apiModule = module {
     single {
         Json {
             ignoreUnknownKeys = true

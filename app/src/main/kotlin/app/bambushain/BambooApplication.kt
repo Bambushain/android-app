@@ -17,7 +17,7 @@ class BambooApplication : Application(), KoinComponent {
         startKoin {
             androidLogger()
             androidContext(this@BambooApplication)
-            modules(appModule)
+            modules(apiModule, appModule)
         }
     }
 }

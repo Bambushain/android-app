@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "app.bambushain.api"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 30

@@ -39,12 +39,12 @@ fun computeVersionCode(): Int {
 
 android {
     namespace = "app.bambushain"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.bambushain"
         minSdk = 30
-        targetSdk = 37
+        targetSdk = 36
         versionCode = computeVersionCode()
         versionName = computeVersionName()
 
@@ -133,6 +133,9 @@ dependencies {
     implementation(libs.org.jetbrains.kotlinx.kotlinx.serialization.json)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core)
     runtimeOnly(libs.org.jetbrains.kotlinx.kotlinx.coroutines.android)
+
+    implementation(platform(libs.retrofit2.bom))
+    implementation(libs.retrofit2)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.fcm)
