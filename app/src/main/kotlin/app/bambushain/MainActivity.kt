@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.bambushain.api.AuthenticationApi
+import app.bambushain.composables.ForgotPasswordScreen
 import app.bambushain.composables.LoginScreen
 import app.bambushain.theme.BambooTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -64,6 +65,7 @@ class MainActivity : ComponentActivity() {
 
 enum class Screens {
     Login,
+    ForgotPassword,
     Calendar,
     Pandas,
     Characters,
@@ -113,13 +115,19 @@ fun MainComposable(
             composable(Screens.Login.name) {
                 LoginScreen(navController)
             }
+            composable(Screens.ForgotPassword.name) {
+                ForgotPasswordScreen(navController)
+            }
             composable(Screens.Calendar.name) { }
             composable(Screens.Pandas.name) { }
             composable(Screens.Characters.name) { }
             composable(Screens.MyProfile.name) { }
         }
     }
-    val hideNavigation = setOf(Screens.Login.name).contains(navController.currentDestination?.route ?: "")
+    val hideNavigation = setOf(
+        Screens.Login.name,
+        Screens.ForgotPassword.name
+    ).contains(navController.currentDestination?.route ?: "")
 
     if (!checkingToken) {
         BambooTheme {

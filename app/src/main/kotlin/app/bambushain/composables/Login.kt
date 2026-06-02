@@ -1,6 +1,7 @@
 package app.bambushain.composables
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.bambushain.Screens
 import app.bambushain.api.AuthenticationApi
+import app.bambushain.model.ForgotPassword
 import app.bambushain.model.Login
 import app.bambushain.model.LoginResult
 import app.bambushain.setBambooToken
@@ -41,6 +43,73 @@ import org.koin.compose.koinInject
 
 private fun storeLoginResult(result: LoginResult, context: Context) {
     context.setBambooToken(result.token!!)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ForgotPasswordScreen(
+    navController: NavController,
+    authenticationApi: AuthenticationApi = koinInject()
+) {
+    var email by remember { mutableStateOf("") }
+
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val requestLink = {
+        coroutineScope.launch {
+            val response = authenticationApi.forgotPassword(ForgotPassword(email))
+            if (response.isSuccessful) {
+                Toast.makeText(
+                    context,
+                    "Wenn wir einen Account mit deinen Daten haben wird dir ein Link zugeschickt",
+                    Toast.LENGTH_LONG
+                ).show()
+                navController.navigate(Screens.Login.name)
+            }
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Passwort vergessen") }
+            )
+        }
+    ) { scaffoldPadding ->
+        Surface(
+            modifier = Modifier
+                .padding(scaffoldPadding)
+                .fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    "Gib unten deine Email oder Benutzernamen ein und dir wird ein Link zugeschickt",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Email") },
+                    value = email,
+                    onValueChange = { email = it },
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                )
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(onClick = {
+                        requestLink()
+                    }) {
+                        Text("Link anfordern")
+                    }
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,7 +213,9 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     if (!loginInProgress) {
-                        FilledTonalButton(onClick = {}) {
+                        FilledTonalButton(onClick = {
+                            navController.navigate(Screens.ForgotPassword.name)
+                        }) {
                             Text("Passwort vergessen")
                         }
                     }
