@@ -16,12 +16,12 @@ fun computeVersionCode(): Int {
 
 android {
     namespace = "app.bambushain"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "app.bambushain"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = computeVersionCode()
         versionName = "$bambooMajorVersion.$bambooMinorVersion"
     }
