@@ -79,7 +79,7 @@ enum class Screens {
     ForgotPassword,
     Calendar,
     Pandas,
-    Characters,
+    FinalFantasy,
     MyProfile
 }
 
@@ -137,7 +137,7 @@ fun MainComposable(
                 )
             }
             composable(Screens.Pandas.name) { }
-            composable(Screens.Characters.name) { }
+            composable(Screens.FinalFantasy.name) { }
             composable(Screens.MyProfile.name) { }
         }
     }
@@ -177,15 +177,15 @@ fun MainComposable(
                             label = { Text("Pandas") },
                         )
                         NavigationSuiteItem(
-                            selected = navController.currentDestination?.route == Screens.Characters.name,
-                            onClick = { navController.navigate(Screens.Characters.name) },
+                            selected = navController.currentDestination?.route == Screens.FinalFantasy.name,
+                            onClick = { navController.navigate(Screens.FinalFantasy.name) },
                             icon = {
                                 Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.hiking),
-                                    contentDescription = "Charaktere"
+                                    imageVector = ImageVector.vectorResource(R.drawable.final_fantasy),
+                                    contentDescription = "Final Fantasy"
                                 )
                             },
-                            label = { Text("Charaktere") },
+                            label = { Text("Final Fantasy") },
                         )
                         NavigationSuiteItem(
                             selected = navController.currentDestination?.route == Screens.MyProfile.name,
@@ -202,7 +202,7 @@ fun MainComposable(
                     primaryActionContent = {
                         if (navController.currentDestination?.route in setOf(
                                 Screens.Calendar.name,
-                                Screens.Characters.name
+                                Screens.FinalFantasy.name
                             )
                         ) {
                             FloatingActionButton(
@@ -216,7 +216,7 @@ fun MainComposable(
                                         ImageVector.vectorResource(R.drawable.calendar_plus),
                                         contentDescription = "Event hinzufügen"
                                     )
-                                } else if (Screens.Characters.name == navController.currentDestination?.route) {
+                                } else if (Screens.FinalFantasy.name == navController.currentDestination?.route) {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.plus),
                                         contentDescription = "Charakter hinzufügen"
