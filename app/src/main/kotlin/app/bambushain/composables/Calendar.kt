@@ -952,7 +952,8 @@ fun EditEventDialog(
 fun Calendar(
     fabClicked: Boolean,
     onFabFinished: () -> Unit,
-    calendarApi: CalendarApi = koinInject()
+    calendarApi: CalendarApi = koinInject(),
+    grovesApi: GrovesApi = koinInject()
 ) {
     val today = Clock.System.now().toLocalDateTime(TimeZone.UTC).date
     var events by remember { mutableStateOf(emptyList<GroveEvent>()) }
@@ -960,6 +961,7 @@ fun Calendar(
     var eventToDelete by remember { mutableStateOf<GroveEvent?>(null) }
     var eventToEdit by remember { mutableStateOf<GroveEvent?>(null) }
     var reloadTrigger by remember { mutableStateOf(true) }
+    var groves by remember { mutableStateOf(emptyList<Grove>()) }
 
     val server = stringResource(apiR.string.server)
 
@@ -1063,15 +1065,14 @@ fun Calendar(
             client.close()
         }
     }
+    LaunchedEffect(Unit) {
+        groves = grovesApi.getGroves().body() ?: emptyList()
+    }
     LaunchedEffect(visibleMonth) {
         startDate = visibleMonth?.minus(DatePeriod(0, 3, 0))
         endDate = visibleMonth?.plus(DatePeriod(0, 3, 0))
     }
     LaunchedEffect(groveId, startDate, endDate, reloadTrigger) {
-        if (!reloadTrigger) {
-            return@LaunchedEffect
-        }
-
         val response =
             calendarApi.getGroveEvents(startDate ?: today, endDate ?: today, groveId)
         if (response.isSuccessful) {
@@ -1083,15 +1084,75 @@ fun Calendar(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(currentVisibleMonth) },
+                title = {
+                    Text(
+                        buildString {
+                            append(currentVisibleMonth)
+                            if (groveId != null) {
+                                val grove = groves.find { it.id == groveId }
+                                if (grove != null) {
+                                    append(" (auf ${grove.name} gefiltert)")
+                                }
+                            }
+                        }
+                    )
+                },
                 actions = {
                     IconButton(onClick = {
                         jumpToToday()
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.calendar),
-                            "Gehe zu heute"
+                            contentDescription = "Gehe zu heute"
                         )
+                    }
+                    Box {
+                        var showMore by remember {
+                            mutableStateOf(
+                                false
+                            )
+                        }
+                        IconButton(onClick = {
+                            showMore = true
+                        }) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.filter_variant),
+                                contentDescription = "Nach Hain filtern"
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showMore,
+                            onDismissRequest = { showMore = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        "Alle Haine",
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                },
+                                onClick = {
+                                    groveId = null
+                                    showMore = false
+                                }
+                            )
+                            for (grove in groves) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            grove.name,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    },
+                                    onClick = {
+                                        groveId = grove.id
+                                        showMore = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             )
