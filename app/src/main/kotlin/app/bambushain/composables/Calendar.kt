@@ -34,6 +34,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -1115,10 +1117,18 @@ fun Calendar(
                         IconButton(onClick = {
                             showMore = true
                         }) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.filter_variant),
-                                contentDescription = "Nach Hain filtern"
-                            )
+                            BadgedBox(
+                                badge = {
+                                    if (groveId != null) {
+                                        Badge(containerColor = MaterialTheme.colorScheme.primary)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.filter_variant),
+                                    contentDescription = "Nach Hain filtern"
+                                )
+                            }
                         }
                         DropdownMenu(
                             expanded = showMore,

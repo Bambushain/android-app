@@ -112,8 +112,6 @@ dependencies {
     implementation(project(":api"))
 
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.animation.graphics)
-    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.navigation.compose)
 
@@ -121,8 +119,10 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
+    implementation(libs.androidx.compose.animation.graphics)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
 
     implementation(platform(libs.io.insert.koin.koin.bom))
     implementation(libs.io.insert.koin.koin.core)
