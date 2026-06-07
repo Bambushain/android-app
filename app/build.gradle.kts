@@ -39,12 +39,12 @@ fun computeVersionCode(): Int {
 
 android {
     namespace = "app.bambushain"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "app.bambushain"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = computeVersionCode()
         versionName = computeVersionName()
 
@@ -136,6 +136,10 @@ dependencies {
 
     implementation(platform(libs.retrofit2.bom))
     implementation(libs.retrofit2)
+
+    implementation(platform(libs.ktor.bom))
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.fcm)

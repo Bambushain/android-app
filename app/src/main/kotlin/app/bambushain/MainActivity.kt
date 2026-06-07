@@ -10,6 +10,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,11 +24,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.bambushain.api.AuthenticationApi
+import app.bambushain.composables.Calendar
 import app.bambushain.composables.ForgotPasswordScreen
 import app.bambushain.composables.LoginScreen
 import app.bambushain.theme.BambooTheme
@@ -95,6 +106,7 @@ fun MainComposable(
     var startDestination by remember { mutableStateOf(Screens.Login.name) }
 
     var checkingToken by remember { mutableStateOf(true) }
+    var fabClicked by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         startDestination = if (authenticationApi.checkToken().isSuccessful) {
@@ -118,7 +130,12 @@ fun MainComposable(
             composable(Screens.ForgotPassword.name) {
                 ForgotPasswordScreen(navController)
             }
-            composable(Screens.Calendar.name) { }
+            composable(Screens.Calendar.name) {
+                Calendar(
+                    fabClicked,
+                    { fabClicked = false }
+                )
+            }
             composable(Screens.Pandas.name) { }
             composable(Screens.Characters.name) { }
             composable(Screens.MyProfile.name) { }
@@ -135,8 +152,79 @@ fun MainComposable(
                 navHost()
             } else {
                 NavigationSuiteScaffold(
+                    navigationItemVerticalArrangement = Arrangement.Center,
                     navigationItems = {
-                    }
+                        NavigationSuiteItem(
+                            selected = navController.currentDestination?.route == Screens.Calendar.name,
+                            onClick = { navController.navigate(Screens.Calendar.name) },
+                            icon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.calendar_month),
+                                    contentDescription = "Kalender"
+                                )
+                            },
+                            label = { Text("Kalender") },
+                        )
+                        NavigationSuiteItem(
+                            selected = navController.currentDestination?.route == Screens.Pandas.name,
+                            onClick = { navController.navigate(Screens.Pandas.name) },
+                            icon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.account_group),
+                                    contentDescription = "Pandas"
+                                )
+                            },
+                            label = { Text("Pandas") },
+                        )
+                        NavigationSuiteItem(
+                            selected = navController.currentDestination?.route == Screens.Characters.name,
+                            onClick = { navController.navigate(Screens.Characters.name) },
+                            icon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.hiking),
+                                    contentDescription = "Charaktere"
+                                )
+                            },
+                            label = { Text("Charaktere") },
+                        )
+                        NavigationSuiteItem(
+                            selected = navController.currentDestination?.route == Screens.MyProfile.name,
+                            onClick = { navController.navigate(Screens.MyProfile.name) },
+                            icon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.account),
+                                    contentDescription = "Mein Profil"
+                                )
+                            },
+                            label = { Text("Mein Profil") },
+                        )
+                    },
+                    primaryActionContent = {
+                        if (navController.currentDestination?.route in setOf(
+                                Screens.Calendar.name,
+                                Screens.Characters.name
+                            )
+                        ) {
+                            FloatingActionButton(
+                                modifier = Modifier.padding(start = 20.dp),
+                                onClick = {
+                                    fabClicked = true
+                                },
+                            ) {
+                                if (Screens.Calendar.name == navController.currentDestination?.route) {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.calendar_plus),
+                                        contentDescription = "Event hinzufügen"
+                                    )
+                                } else if (Screens.Characters.name == navController.currentDestination?.route) {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.plus),
+                                        contentDescription = "Charakter hinzufügen"
+                                    )
+                                }
+                            }
+                        }
+                    },
                 ) {
                     navHost()
                 }

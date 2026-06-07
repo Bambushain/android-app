@@ -1,6 +1,5 @@
 package app.bambushain.api
 
-import app.bambushain.model.ApiBambooGroveEventGet200Response
 import app.bambushain.model.EventReminder
 import app.bambushain.model.GroveEvent
 import retrofit2.Response
@@ -28,7 +27,7 @@ interface CalendarApi {
      * @return [Unit]
      */
     @DELETE("api/bamboo-grove/event/{event_id}")
-    suspend fun apiBambooGroveEventEventIdDelete(@Path("event_id") eventId: Int): Response<Unit>
+    suspend fun deleteGroveEvent(@Path("event_id") eventId: Int): Response<Unit>
 
     /**
      * PUT api/bamboo-grove/event/{event_id}
@@ -46,7 +45,7 @@ interface CalendarApi {
      * @return [Unit]
      */
     @PUT("api/bamboo-grove/event/{event_id}")
-    suspend fun apiBambooGroveEventEventIdPut(
+    suspend fun updateGroveEvent(
         @Path("event_id") eventId: Int,
         @Body groveEvent: GroveEvent
     ): Response<Unit>
@@ -66,7 +65,7 @@ interface CalendarApi {
      * @return [kotlin.collections.List<EventReminder>]
      */
     @GET("api/bamboo-grove/event/{event_id}/reminder")
-    suspend fun apiBambooGroveEventEventIdReminderGet(@Path("event_id") eventId: Int): Response<List<EventReminder>>
+    suspend fun getReminderForEvent(@Path("event_id") eventId: Int): Response<List<EventReminder>>
 
     /**
      * POST api/bamboo-grove/event/{event_id}/reminder
@@ -83,7 +82,7 @@ interface CalendarApi {
      * @return [GroveEvent]
      */
     @POST("api/bamboo-grove/event/{event_id}/reminder")
-    suspend fun apiBambooGroveEventEventIdReminderPost(
+    suspend fun addEventReminder(
         @Path("event_id") eventId: Int,
         @Body eventReminder: EventReminder
     ): Response<GroveEvent>
@@ -104,7 +103,7 @@ interface CalendarApi {
      * @return [Unit]
      */
     @DELETE("api/bamboo-grove/event/{event_id}/reminder/{reminder_id}")
-    suspend fun apiBambooGroveEventEventIdReminderReminderIdDelete(
+    suspend fun deleteEventReminder(
         @Path("event_id") eventId: Int,
         @Path("reminder_id") reminderId: Int
     ): Response<Unit>
@@ -122,14 +121,14 @@ interface CalendarApi {
      * @param start Start date for event range
      * @param end End date for event range
      * @param grove Optional grove ID to filter events (optional)
-     * @return [ApiBambooGroveEventGet200Response]
+     * @return [List<GroveEvent>]
      */
     @GET("api/bamboo-grove/event")
-    suspend fun apiBambooGroveEventGet(
+    suspend fun getGroveEvents(
         @Query("start") start: kotlinx.datetime.LocalDate,
         @Query("end") end: kotlinx.datetime.LocalDate,
         @Query("grove") grove: Int? = null
-    ): Response<ApiBambooGroveEventGet200Response>
+    ): Response<List<GroveEvent>>
 
     /**
      * POST api/bamboo-grove/event
@@ -145,6 +144,6 @@ interface CalendarApi {
      * @return [GroveEvent]
      */
     @POST("api/bamboo-grove/event")
-    suspend fun apiBambooGroveEventPost(@Body groveEvent: GroveEvent): Response<GroveEvent>
+    suspend fun createGroveEvent(@Body groveEvent: GroveEvent): Response<GroveEvent>
 
 }

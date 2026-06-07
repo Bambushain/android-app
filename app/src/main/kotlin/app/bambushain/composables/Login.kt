@@ -21,12 +21,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowSizeClass
 import app.bambushain.Screens
 import app.bambushain.api.AuthenticationApi
 import app.bambushain.model.ForgotPassword
@@ -42,7 +45,10 @@ import app.bambushain.model.Login
 import app.bambushain.model.LoginResult
 import app.bambushain.setBambooToken
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.koinInject
+import kotlin.time.Clock
 
 private fun storeLoginResult(result: LoginResult, context: Context) {
     context.setBambooToken(result.token!!)
@@ -58,6 +64,10 @@ fun ForgotPasswordScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    val today = remember {
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    }
 
     val requestLink = {
         coroutineScope.launch {
@@ -85,34 +95,38 @@ fun ForgotPasswordScreen(
                 .padding(scaffoldPadding)
                 .fillMaxSize()
         ) {
-            Column(
+            Row(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    "Gib unten deine Email oder Benutzernamen ein und dir wird ein Link zugeschickt",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Email") },
-                    value = email,
-                    onValueChange = { email = it },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    keyboardActions = KeyboardActions(
-                        {
-                            requestLink()
-                        }
-                    ),
-                )
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
+                Panda(modifier = Modifier.align(Alignment.Top), date = today)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Button(onClick = {
-                        requestLink()
-                    }) {
-                        Text("Link anfordern")
+                    Text(
+                        "Gib unten deine Email oder Benutzernamen ein und dir wird ein Link zugeschickt",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text("Email") },
+                        value = email,
+                        onValueChange = { email = it },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                        keyboardActions = KeyboardActions(
+                            {
+                                requestLink()
+                            }
+                        ),
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Button(onClick = {
+                            requestLink()
+                        }) {
+                            Text("Link anfordern")
+                        }
                     }
                 }
             }
@@ -168,6 +182,10 @@ fun LoginScreen(
         }
     }
 
+    val today = remember {
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -181,76 +199,84 @@ fun LoginScreen(
                 .padding(scaffoldPadding)
                 .fillMaxSize()
         ) {
-            Column(
+            Row(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    "Melde dich an und betrete den Bambushain",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Email") },
-                    value = email,
-                    onValueChange = { email = it },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    keyboardActions = KeyboardActions({ focusManager.moveFocus(FocusDirection.Down) }),
-                    singleLine = true
-                )
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Passwort") },
-                    value = password,
-                    onValueChange = { password = it },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardActions = KeyboardActions({
-                        if (!loginInProgress) {
-                            login()
-                        } else {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    }),
-                    singleLine = true
-                )
-                if (loginInProgress) {
+                Panda(modifier = Modifier.align(Alignment.Top), date = today)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        "Melde dich an und betrete den Bambushain",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("Zwei Faktor Code") },
-                        value = twoFactorCode,
-                        onValueChange = { twoFactorCode = it },
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        keyboardActions = KeyboardActions(
-                            {
-                                if (loginInProgress) {
-                                    login()
-                                }
-                            }
-                        ),
+                        label = { Text("Email") },
+                        value = email,
+                        onValueChange = { email = it },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                        keyboardActions = KeyboardActions({
+                            focusManager.moveFocus(
+                                FocusDirection.Down
+                            )
+                        }),
                         singleLine = true
                     )
-                }
-                Row(
-                    horizontalArrangement =
-                        if (loginInProgress) {
-                            Arrangement.End
-                        } else {
-                            Arrangement.SpaceBetween
-                        },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (!loginInProgress) {
-                        FilledTonalButton(onClick = {
-                            navController.navigate(Screens.ForgotPassword.name)
-                        }) {
-                            Text("Passwort vergessen")
-                        }
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text("Passwort") },
+                        value = password,
+                        onValueChange = { password = it },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardActions = KeyboardActions({
+                            if (!loginInProgress) {
+                                login()
+                            } else {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                        }),
+                        singleLine = true
+                    )
+                    if (loginInProgress) {
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Zwei Faktor Code") },
+                            value = twoFactorCode,
+                            onValueChange = { twoFactorCode = it },
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                            keyboardActions = KeyboardActions(
+                                {
+                                    if (loginInProgress) {
+                                        login()
+                                    }
+                                }
+                            ),
+                            singleLine = true
+                        )
                     }
-                    Button(onClick = {
-                        login()
-                    }) {
-                        Text("Anmelden")
+                    Row(
+                        horizontalArrangement =
+                            if (loginInProgress) {
+                                Arrangement.End
+                            } else {
+                                Arrangement.SpaceBetween
+                            },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (!loginInProgress) {
+                            FilledTonalButton(onClick = {
+                                navController.navigate(Screens.ForgotPassword.name)
+                            }) {
+                                Text("Passwort vergessen")
+                            }
+                        }
+                        Button(onClick = {
+                            login()
+                        }) {
+                            Text("Anmelden")
+                        }
                     }
                 }
             }

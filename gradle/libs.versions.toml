@@ -1,11 +1,11 @@
 [versions]
 agp = "9.2.1"
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 activityCompose = "1.13.0"
 composeBom = "2026.05.01"
 navigationCompose = "2.9.8"
 koinBom = "4.2.1"
-serialization = "2.3.21"
+serialization = "2.4.0"
 serializationJson = "1.11.0"
 datetime = "0.8.0"
 coroutines = "1.11.0"
@@ -14,10 +14,11 @@ googleServices = "4.4.4"
 firebaseBom = "34.14.0"
 retrofit2 = "3.0.0"
 adaptiveNavigation = "1.2.0"
-dependencyAnalysis = "3.14.0"
+dependencyAnalysis = "3.14.1"
 animationGraphics = "1.11.2"
 material3AdaptiveNavigationSuite = "1.4.0"
 lifecycleProcess = "2.10.0"
+ktor = "3.5.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -58,6 +59,10 @@ retrofit2-bom = { group = "com.squareup.retrofit2", name = "retrofit-bom", versi
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit" }
 retrofit2-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization" }
 retrofit2-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars" }
+
+ktor-bom = { group = "io.ktor", name = "ktor-bom", version.ref = "ktor" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
