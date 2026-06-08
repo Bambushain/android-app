@@ -19,7 +19,7 @@ animationGraphics = "1.11.2"
 material3AdaptiveNavigationSuite = "1.4.0"
 lifecycleProcess = "2.10.0"
 ktor = "3.5.0"
-material3 = "1.4.0"
+coil = "3.4.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -64,6 +64,11 @@ retrofit2-converter-scalars = { group = "com.squareup.retrofit2", name = "conver
 ktor-bom = { group = "io.ktor", name = "ktor-bom", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp" }
+
+coil-bom = { group = "io.coil-kt.coil3", name = "coil-bom", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp" }
+coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

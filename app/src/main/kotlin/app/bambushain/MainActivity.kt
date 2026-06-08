@@ -36,6 +36,7 @@ import app.bambushain.api.AuthenticationApi
 import app.bambushain.composables.Calendar
 import app.bambushain.composables.ForgotPasswordScreen
 import app.bambushain.composables.LoginScreen
+import app.bambushain.composables.Pandas
 import app.bambushain.theme.BambooTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -136,7 +137,9 @@ fun MainComposable(
                     { fabClicked = false }
                 )
             }
-            composable(Screens.Pandas.name) { }
+            composable(Screens.Pandas.name) {
+                Pandas()
+            }
             composable(Screens.FinalFantasy.name) { }
             composable(Screens.MyProfile.name) { }
         }

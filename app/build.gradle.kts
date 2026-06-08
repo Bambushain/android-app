@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         applicationId = "app.bambushain"
-        minSdk = 30
+        minSdk = 31
         targetSdk = 37
         versionCode = computeVersionCode()
         versionName = computeVersionName()
@@ -140,6 +140,11 @@ dependencies {
     implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
+
+    implementation(platform(libs.coil.bom))
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.svg)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.fcm)

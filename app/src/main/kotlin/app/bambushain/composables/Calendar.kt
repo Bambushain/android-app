@@ -1096,7 +1096,10 @@ fun Calendar(
                                     append(" (auf ${grove.name} gefiltert)")
                                 }
                             }
-                        }
+                        },
+                        overflow = TextOverflow.Ellipsis,
+                        softWrap = false,
+                        maxLines = 1
                     )
                 },
                 actions = {
@@ -1108,59 +1111,61 @@ fun Calendar(
                             contentDescription = "Gehe zu heute"
                         )
                     }
-                    Box {
-                        var showMore by remember {
-                            mutableStateOf(
-                                false
-                            )
-                        }
-                        IconButton(onClick = {
-                            showMore = true
-                        }) {
-                            BadgedBox(
-                                badge = {
-                                    if (groveId != null) {
-                                        Badge(containerColor = MaterialTheme.colorScheme.primary)
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.filter_variant),
-                                    contentDescription = "Nach Hain filtern"
+                    if (groves.isNotEmpty()) {
+                        Box {
+                            var showMore by remember {
+                                mutableStateOf(
+                                    false
                                 )
                             }
-                        }
-                        DropdownMenu(
-                            expanded = showMore,
-                            onDismissRequest = { showMore = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        "Alle Haine",
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
+                            IconButton(onClick = {
+                                showMore = true
+                            }) {
+                                BadgedBox(
+                                    badge = {
+                                        if (groveId != null) {
+                                            Badge(containerColor = MaterialTheme.colorScheme.primary)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.filter_variant),
+                                        contentDescription = "Nach Hain filtern"
                                     )
-                                },
-                                onClick = {
-                                    groveId = null
-                                    showMore = false
                                 }
-                            )
-                            for (grove in groves) {
+                            }
+                            DropdownMenu(
+                                expanded = showMore,
+                                onDismissRequest = { showMore = false }
+                            ) {
                                 DropdownMenuItem(
                                     text = {
                                         Text(
-                                            grove.name,
+                                            "Alle Haine",
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                         )
                                     },
                                     onClick = {
-                                        groveId = grove.id
+                                        groveId = null
                                         showMore = false
                                     }
                                 )
+                                for (grove in groves) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                grove.name,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        },
+                                        onClick = {
+                                            groveId = grove.id
+                                            showMore = false
+                                        }
+                                    )
+                                }
                             }
                         }
                     }

@@ -1,6 +1,6 @@
 package app.bambushain.api
 
-import app.bambushain.model.User
+import app.bambushain.model.WebUser
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
@@ -41,6 +41,6 @@ interface PandasApi {
         @Query("grove") grove: Int? = null,
         @Query("banned") banned: Boolean? = false,
         @Query("all") all: Boolean? = false
-    ): Response<List<User>>
+    ): Response<List<WebUser>>
 
 }
