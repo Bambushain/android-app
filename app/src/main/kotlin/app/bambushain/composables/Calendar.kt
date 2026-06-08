@@ -1179,7 +1179,7 @@ fun Calendar(
                 .fillMaxSize()
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
             ) {
                 if (visibleMonth != null) {
                     Panda(

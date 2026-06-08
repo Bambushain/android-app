@@ -80,8 +80,7 @@ enum class Screens {
     ForgotPassword,
     Calendar,
     Pandas,
-    FinalFantasy,
-    MyProfile
+    FinalFantasy
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -90,10 +89,8 @@ fun MainComposable(
     authenticationApi: AuthenticationApi = koinInject()
 ) {
     val navController = rememberNavController()
-    val coroutineScope = rememberCoroutineScope()
 
     val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStack?.destination?.route
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val permissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -141,7 +138,6 @@ fun MainComposable(
                 Pandas()
             }
             composable(Screens.FinalFantasy.name) { }
-            composable(Screens.MyProfile.name) { }
         }
     }
     val hideNavigation = setOf(
@@ -189,17 +185,6 @@ fun MainComposable(
                                 )
                             },
                             label = { Text("Final Fantasy") },
-                        )
-                        NavigationSuiteItem(
-                            selected = navController.currentDestination?.route == Screens.MyProfile.name,
-                            onClick = { navController.navigate(Screens.MyProfile.name) },
-                            icon = {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.account),
-                                    contentDescription = "Mein Profil"
-                                )
-                            },
-                            label = { Text("Mein Profil") },
                         )
                     },
                     primaryActionContent = {
