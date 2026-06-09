@@ -22,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -37,6 +36,7 @@ import app.bambushain.composables.Calendar
 import app.bambushain.composables.ForgotPasswordScreen
 import app.bambushain.composables.LoginScreen
 import app.bambushain.composables.Pandas
+import app.bambushain.composables.final_fantasy.Characters
 import app.bambushain.theme.BambooTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -91,6 +91,7 @@ fun MainComposable(
     val navController = rememberNavController()
 
     val currentBackStack by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStack?.destination?.route
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val permissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -105,6 +106,7 @@ fun MainComposable(
 
     var checkingToken by remember { mutableStateOf(true) }
     var fabClicked by remember { mutableStateOf(false) }
+    var showFinalFantasyFab by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         startDestination = if (authenticationApi.checkToken().isSuccessful) {
@@ -137,7 +139,14 @@ fun MainComposable(
             composable(Screens.Pandas.name) {
                 Pandas()
             }
-            composable(Screens.FinalFantasy.name) { }
+            composable(Screens.FinalFantasy.name) {
+                Characters(
+                    fabClicked = fabClicked,
+                    onFabFinished = { fabClicked = false },
+                    onHideFab = { showFinalFantasyFab = false },
+                    onShowFab = { showFinalFantasyFab = true }
+                )
+            }
         }
     }
     val hideNavigation = setOf(
@@ -154,7 +163,7 @@ fun MainComposable(
                     navigationItemVerticalArrangement = Arrangement.Center,
                     navigationItems = {
                         NavigationSuiteItem(
-                            selected = navController.currentDestination?.route == Screens.Calendar.name,
+                            selected = currentRoute == Screens.Calendar.name,
                             onClick = { navController.navigate(Screens.Calendar.name) },
                             icon = {
                                 Icon(
@@ -165,7 +174,7 @@ fun MainComposable(
                             label = { Text("Kalender") },
                         )
                         NavigationSuiteItem(
-                            selected = navController.currentDestination?.route == Screens.Pandas.name,
+                            selected = currentRoute == Screens.Pandas.name,
                             onClick = { navController.navigate(Screens.Pandas.name) },
                             icon = {
                                 Icon(
@@ -176,7 +185,7 @@ fun MainComposable(
                             label = { Text("Pandas") },
                         )
                         NavigationSuiteItem(
-                            selected = navController.currentDestination?.route == Screens.FinalFantasy.name,
+                            selected = currentRoute == Screens.FinalFantasy.name,
                             onClick = { navController.navigate(Screens.FinalFantasy.name) },
                             icon = {
                                 Icon(
@@ -188,23 +197,19 @@ fun MainComposable(
                         )
                     },
                     primaryActionContent = {
-                        if (navController.currentDestination?.route in setOf(
-                                Screens.Calendar.name,
-                                Screens.FinalFantasy.name
-                            )
-                        ) {
+                        if (currentRoute == Screens.Calendar.name || (currentRoute == Screens.FinalFantasy.name && showFinalFantasyFab)) {
                             FloatingActionButton(
                                 modifier = Modifier.padding(start = 20.dp),
                                 onClick = {
                                     fabClicked = true
                                 },
                             ) {
-                                if (Screens.Calendar.name == navController.currentDestination?.route) {
+                                if (Screens.Calendar.name == currentRoute) {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.calendar_plus),
                                         contentDescription = "Event hinzufügen"
                                     )
-                                } else if (Screens.FinalFantasy.name == navController.currentDestination?.route) {
+                                } else if (Screens.FinalFantasy.name == currentRoute) {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.plus),
                                         contentDescription = "Charakter hinzufügen"

@@ -51,7 +51,7 @@ import org.koin.compose.koinInject
 import kotlin.time.Clock
 
 private fun storeLoginResult(result: LoginResult, context: Context) {
-    context.setBambooToken(result.token!!)
+    context.setBambooToken(result.token)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

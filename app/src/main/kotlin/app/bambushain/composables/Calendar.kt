@@ -226,7 +226,7 @@ fun ColorPickerDialog(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-class EventFormState constructor(
+class EventFormState(
     val titleState: TextFieldState,
     val descriptionState: TextFieldState,
     val dateRangeState: DateRangePickerState,
@@ -825,7 +825,7 @@ fun EditEventDialog(
     onDismissRequest: () -> Unit,
     calendarApi: CalendarApi = koinInject(),
 ) {
-    val eventId = remember { event.id!! }
+    val eventId = remember { event.id }
 
     val formState = rememberEventFormState(event)
 
@@ -1007,7 +1007,7 @@ fun Calendar(
     val deleteEvent = {
         coroutineScope.launch {
             if (eventToDelete != null) {
-                val response = calendarApi.deleteGroveEvent(eventToDelete!!.id!!)
+                val response = calendarApi.deleteGroveEvent(eventToDelete!!.id)
                 if (response.isSuccessful) {
                     eventToDelete = null
                 } else {

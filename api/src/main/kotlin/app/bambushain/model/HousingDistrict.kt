@@ -30,6 +30,30 @@ enum class HousingDistrict(val value: String) {
      */
     override fun toString(): String = value
 
+    fun getDisplayName(): String {
+        return when (this) {
+            TheLavenderBeds -> "Lavendelbeete"
+            Mist -> "Dorf des Nebels"
+            TheGoblet -> "Kelchkuppe"
+            Shirogane -> "Shirogane"
+            Empyreum -> "Empyreum"
+        }
+    }
+
+    companion object {
+        fun fromDisplayName(district: String): HousingDistrict {
+            return when (district) {
+                "Lavendelbeete" -> TheLavenderBeds
+                "Dorf des Nebels" -> Mist
+                "Kelchkuppe" -> TheGoblet
+                "Shirogane" -> Shirogane
+                "Empyreum" -> Empyreum
+                else -> throw Exception()
+            }
+        }
+    }
 }
 
-
+fun String.toHousingDistrict(): HousingDistrict {
+    return HousingDistrict.fromDisplayName(this)
+}

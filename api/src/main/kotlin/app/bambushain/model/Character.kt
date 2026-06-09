@@ -2,34 +2,24 @@ package app.bambushain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import java.io.Serializable
 import kotlinx.serialization.Serializable as KSerializable
 
 @Parcelize
 @KSerializable
+data class CharacterCustomField(
+    val label: String,
+    val values: List<String>
+) : Parcelable
+
+@Parcelize
+@KSerializable
 data class Character(
-
-    @Contextual @SerialName(value = "race")
     val race: CharacterRace,
-
-    @SerialName(value = "name")
     val name: String,
-
-    @SerialName(value = "world")
     val world: String,
-
-    @SerialName(value = "id")
-    val id: Int? = null,
-
-    @SerialName(value = "datacenter")
+    val id: Int = -1,
     val datacenter: String? = null,
-
-    @SerialName(value = "customFields")
-    val customFields: List<CustomField>? = null,
-
-    @SerialName(value = "freeCompany")
+    val customFields: List<CharacterCustomField>? = null,
     val freeCompany: FreeCompany? = null
 
-) : Serializable, Parcelable
+) : Parcelable

@@ -2,8 +2,6 @@ package app.bambushain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.SerialName
-import java.io.Serializable
 import kotlinx.serialization.Serializable as KSerializable
 
 @Parcelize
@@ -13,7 +11,7 @@ data class User(
     val email: String,
     val displayName: String,
     val discordName: String,
-) : Serializable, Parcelable
+) : Parcelable
 
 @Parcelize
 @KSerializable
@@ -22,4 +20,4 @@ data class WebUser(
     val email: String,
     val displayName: String,
     val discordName: String,
-) : Serializable, Parcelable
+) : Parcelable

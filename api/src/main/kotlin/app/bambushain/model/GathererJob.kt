@@ -1,5 +1,7 @@
 package app.bambushain.model
 
+import androidx.annotation.DrawableRes
+import app.bambushain.api.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -27,4 +29,39 @@ enum class GathererJob(val value: String) {
      */
     override fun toString(): String = value
 
+    @DrawableRes
+    fun getIcon(): Int {
+        return when (this) {
+            Culinarian -> R.drawable.culinarian
+            Miner -> R.drawable.miner
+            Botanist -> R.drawable.botanist
+            Fisher -> R.drawable.fisher
+        }
+    }
+
+    fun getDisplayName(): String {
+        return when (this) {
+            Culinarian -> "Gourmet"
+            Miner -> "Minenarbeiter"
+            Botanist -> "Gärtner"
+            Fisher -> "Fischer"
+        }
+    }
+
+    companion object {
+        fun fromDisplayName(job: String): GathererJob {
+            return when (job) {
+                "Gourmet" -> Culinarian
+                "Minenarbeiter" -> Miner
+                "Gärtner" -> Botanist
+                "Fischer" -> Fisher
+                else -> throw Exception()
+            }
+        }
+    }
+
+}
+
+fun String.toGathererJob(): GathererJob {
+    return GathererJob.fromDisplayName(this)
 }

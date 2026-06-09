@@ -38,6 +38,19 @@ enum class CharacterRace(val value: String) {
      * the client sends the correct enum values to the server always.
      */
     override fun toString(): String = value
+
+    fun getDisplayName(): String {
+        return when (this) {
+            Hyur -> "Hyur"
+            Elezen -> "Elezen"
+            Lalafell -> "Lalafell"
+            Miqote -> "Miqo'te"
+            Roegadyn -> "Roegadyn"
+            AuRa -> "Au Ra"
+            Hrothgar -> "Hrothgar"
+            Viera -> "Viera"
+        }
+    }
 }
 
 

@@ -21,4 +21,24 @@ enum class HousingType(val value: String) {
      */
     override fun toString(): String = value
 
+    fun getDisplayName(): String {
+        return when (this) {
+            Private -> "Private Unterkunft"
+            SharedApartment -> "Wohngemeinschaft"
+        }
+    }
+
+    companion object {
+        fun fromDisplayName(type: String): HousingType {
+            return when (type) {
+                "Private Unterkunft" -> Private
+                "Wohngemeinschaft" -> SharedApartment
+                else -> throw Exception()
+            }
+        }
+    }
+}
+
+fun String.toHousingType(): HousingType {
+    return HousingType.fromDisplayName(this)
 }
