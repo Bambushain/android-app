@@ -32,10 +32,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.bambushain.api.AuthenticationApi
-import app.bambushain.composables.Calendar
 import app.bambushain.composables.ForgotPasswordScreen
 import app.bambushain.composables.LoginScreen
 import app.bambushain.composables.Pandas
+import app.bambushain.composables.calendar.Calendar
 import app.bambushain.composables.final_fantasy.Characters
 import app.bambushain.theme.BambooTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

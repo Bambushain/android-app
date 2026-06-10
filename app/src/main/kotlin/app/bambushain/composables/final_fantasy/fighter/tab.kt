@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
@@ -166,16 +167,26 @@ fun FighterTab(
                                 title = { Text("${it.job.getDisplayName()} löschen") },
                                 text = { Text("Soll der Kämpfer mit dem Job ${it.job.getDisplayName()} wirklich gelöscht werden?") },
                                 confirmButton = {
-                                    TextButton(onClick = {
-                                        deleteFighter(it.id)
-                                        showDelete = false
-                                    }) {
-                                        Text("Löschen", color = MaterialTheme.colorScheme.onErrorContainer)
+                                    TextButton(
+                                        onClick = {
+                                            deleteFighter(it.id)
+                                            showDelete = false
+                                        },
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = MaterialTheme.colorScheme.error,
+                                        )
+                                    ) {
+                                        Text("Löschen")
                                     }
                                 },
                                 dismissButton = {
-                                    TextButton(onClick = { showDelete = false }) {
-                                        Text("Nicht löschen", color = MaterialTheme.colorScheme.onErrorContainer)
+                                    TextButton(
+                                        onClick = { showDelete = false },
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = MaterialTheme.colorScheme.error,
+                                        )
+                                    ) {
+                                        Text("Nicht löschen")
                                     }
                                 },
                                 containerColor = MaterialTheme.colorScheme.errorContainer,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -96,22 +97,26 @@ fun HousingTab(
                             title = { Text("${it.housingType.getDisplayName()} löschen") },
                             text = { Text("Soll die ${it.housingType.getDisplayName()} im Gebiet ${it.district.getDisplayName()} im Bezirk ${it.ward} mit der Nummer ${it.plot} wirklich gelöscht werden?") },
                             confirmButton = {
-                                TextButton(onClick = {
-                                    deleteHousing(it.id)
-                                    showDelete = false
-                                }) {
-                                    Text(
-                                        "Löschen",
-                                        color = MaterialTheme.colorScheme.onErrorContainer
+                                TextButton(
+                                    onClick = {
+                                        deleteHousing(it.id)
+                                        showDelete = false
+                                    },
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.error,
                                     )
+                                ) {
+                                    Text("Löschen")
                                 }
                             },
                             dismissButton = {
-                                TextButton(onClick = { showDelete = false }) {
-                                    Text(
-                                        "Nicht löschen",
-                                        color = MaterialTheme.colorScheme.onErrorContainer
+                                TextButton(
+                                    onClick = { showDelete = false },
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.error,
                                     )
+                                ) {
+                                    Text("Nicht löschen")
                                 }
                             },
                             containerColor = MaterialTheme.colorScheme.errorContainer,
