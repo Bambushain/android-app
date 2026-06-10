@@ -41,7 +41,7 @@ enum class CharacterRace(val value: String) {
 
     fun getDisplayName(): String {
         return when (this) {
-            Hyur -> "Hyur"
+            Hyur -> "Hyuran"
             Elezen -> "Elezen"
             Lalafell -> "Lalafell"
             Miqote -> "Miqo'te"
@@ -55,7 +55,7 @@ enum class CharacterRace(val value: String) {
     companion object {
         fun fromDisplayName(race: String): CharacterRace {
             return when (race) {
-                "Hyur" -> Hyur
+                "Hyuran" -> Hyur
                 "Elezen" -> Elezen
                 "Lalafell" -> Lalafell
                 "Miqo'te" -> Miqote
