@@ -1,13 +1,11 @@
 package app.bambushain.composables.final_fantasy
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -33,11 +32,13 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import app.bambushain.R
+import app.bambushain.api.CharactersApi
 import app.bambushain.api.CraftersApi
 import app.bambushain.api.FightersApi
 import app.bambushain.api.FreeCompanyApi
 import app.bambushain.api.GatherersApi
 import app.bambushain.api.HousingApi
+import app.bambushain.composables.final_fantasy.characters.AboutTab
 import app.bambushain.composables.final_fantasy.crafter.CrafterTab
 import app.bambushain.composables.final_fantasy.fighter.FighterTab
 import app.bambushain.composables.final_fantasy.gatherer.GathererTab
@@ -88,74 +89,20 @@ private fun AdaptivePrimaryTabRow(
     }
 }
 
-@Composable
-private fun AboutTab(
-    character: Character,
-    actionClicked: Boolean,
-    onActionFinished: () -> Unit,
-) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(16.dp)
-    ) {
-        item {
-            Column {
-                Text("Rasse", style = MaterialTheme.typography.labelLarge)
-                Text(character.race.getDisplayName())
-            }
-        }
-        item {
-            Column {
-                Text("Welt", style = MaterialTheme.typography.labelLarge)
-                Text(character.world)
-            }
-        }
-        item {
-            Column {
-                Text("Datenzentrum", style = MaterialTheme.typography.labelLarge)
-                if (character.datacenter != null) {
-                    Text(character.datacenter!!)
-                } else {
-                    Text("Kein Datenzentrum angegeben")
-                }
-            }
-        }
-        item {
-            Column {
-                Text("Freie Gesellschaft", style = MaterialTheme.typography.labelLarge)
-                if (character.freeCompany != null) {
-                    Text(character.freeCompany!!.name)
-                } else {
-                    Text("In keiner freien Gesellschaft")
-                }
-            }
-        }
-        item {
-            Column {
-                Text("Rasse", style = MaterialTheme.typography.labelLarge)
-                Text(character.race.getDisplayName())
-            }
-        }
-        items(character.customFields ?: emptyList()) {
-            Column {
-                Text(it.label, style = MaterialTheme.typography.labelLarge)
-                Text(it.values.joinToString(", "))
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterDetails(
     character: Character?,
     showBackButton: Boolean,
     onBackClicked: () -> Unit,
+    onDeleteCharacter: (id: Int) -> Unit,
+    onCharacterUpdated: () -> Unit,
     fightersApi: FightersApi = koinInject(),
     craftersApi: CraftersApi = koinInject(),
     gatherersApi: GatherersApi = koinInject(),
     housingApi: HousingApi = koinInject(),
-    freeCompanyApi: FreeCompanyApi = koinInject()
+    freeCompanyApi: FreeCompanyApi = koinInject(),
+    charactersApi: CharactersApi = koinInject(),
 ) {
     if (character == null) {
         return
@@ -163,6 +110,8 @@ fun CharacterDetails(
 
     var selectedTab by remember { mutableStateOf(CharacterDetailsTab.About) }
     var actionClicked by remember { mutableStateOf(false) }
+
+    var currentCharacter by remember { mutableStateOf(character) }
 
     var fighters by remember { mutableStateOf(emptyList<Fighter>()) }
     var crafters by remember { mutableStateOf(emptyList<Crafter>()) }
@@ -223,13 +172,14 @@ fun CharacterDetails(
             loadHousings(),
             loadFreeCompanyHousing(),
         ).joinAll()
+        currentCharacter = character
     }
 
     Scaffold(
         topBar = {
             Column {
                 TopAppBar(
-                    title = { Text(character.name) },
+                    title = { Text(currentCharacter.name) },
                     navigationIcon = {
                         if (showBackButton) {
                             IconButton(onClick = { onBackClicked() }) {
@@ -268,6 +218,48 @@ fun CharacterDetails(
                                 CharacterDetailsTab.Housing -> Icon(
                                     imageVector = ImageVector.vectorResource(R.drawable.plus),
                                     contentDescription = "Neue Unterkunft"
+                                )
+                            }
+                        }
+                        if (selectedTab == CharacterDetailsTab.About) {
+                            var deleteCharacterOpen by remember { mutableStateOf(false) }
+
+                            IconButton(
+                                onClick = { deleteCharacterOpen = true }
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.delete),
+                                    contentDescription = "Charakter löschen",
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
+                            if (deleteCharacterOpen) {
+                                AlertDialog(
+                                    onDismissRequest = { deleteCharacterOpen = false },
+                                    title = { Text("${character.name} löschen") },
+                                    text = { Text("Soll der Charakter ${character.name} wirklich gelöscht werden?") },
+                                    confirmButton = {
+                                        TextButton(onClick = {
+                                            onDeleteCharacter(character.id)
+                                            deleteCharacterOpen = false
+                                        }) {
+                                            Text(
+                                                "Löschen",
+                                                color = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
+                                    },
+                                    dismissButton = {
+                                        TextButton(onClick = { deleteCharacterOpen = false }) {
+                                            Text(
+                                                "Nicht löschen",
+                                                color = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
+                                    },
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    textContentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                    titleContentColor = MaterialTheme.colorScheme.onErrorContainer
                                 )
                             }
                         }
@@ -332,9 +324,16 @@ fun CharacterDetails(
         ) {
             when (selectedTab) {
                 CharacterDetailsTab.About -> AboutTab(
-                    character = character,
+                    character = currentCharacter,
                     actionClicked = actionClicked,
-                    onActionFinished = { actionClicked = false }
+                    onActionFinished = { actionClicked = false },
+                    onUpdated = {
+                        onCharacterUpdated()
+                        actionClicked = false
+                        coroutineScope.launch {
+                            currentCharacter = charactersApi.getCharacter(character.id).body()!!
+                        }
+                    }
                 )
 
                 CharacterDetailsTab.Fighter -> FighterTab(

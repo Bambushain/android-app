@@ -51,6 +51,24 @@ enum class CharacterRace(val value: String) {
             Viera -> "Viera"
         }
     }
+
+    companion object {
+        fun fromDisplayName(race: String): CharacterRace {
+            return when (race) {
+                "Hyur" -> Hyur
+                "Elezen" -> Elezen
+                "Lalafell" -> Lalafell
+                "Miqo'te" -> Miqote
+                "Roegadyn" -> Roegadyn
+                "Au Ra" -> AuRa
+                "Hrothgar" -> Hrothgar
+                "Viera" -> Viera
+                else -> throw Exception()
+            }
+        }
+    }
 }
 
-
+fun String.toCharacterRace(): CharacterRace {
+    return CharacterRace.fromDisplayName(this)
+}

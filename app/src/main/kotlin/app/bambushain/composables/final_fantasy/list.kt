@@ -18,6 +18,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.bambushain.composables.final_fantasy.characters.CreateCharacter
 import app.bambushain.model.Character
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,6 +77,15 @@ fun CharactersList(
                     }
                 }
             }
+        }
+        if (fabClicked) {
+            CreateCharacter(
+                onDismiss = { onFabFinished() },
+                onCreated = {
+                    onLoadCharacters()
+                    onFabFinished()
+                }
+            )
         }
     }
 }

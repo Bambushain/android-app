@@ -170,15 +170,17 @@ fun FighterTab(
                                         deleteFighter(it.id)
                                         showDelete = false
                                     }) {
-                                        Text("Löschen")
+                                        Text("Löschen", color = MaterialTheme.colorScheme.onErrorContainer)
                                     }
                                 },
                                 dismissButton = {
                                     TextButton(onClick = { showDelete = false }) {
-                                        Text("Nicht löschen")
+                                        Text("Nicht löschen", color = MaterialTheme.colorScheme.onErrorContainer)
                                     }
                                 },
-                                containerColor = MaterialTheme.colorScheme.errorContainer
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                textContentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                titleContentColor = MaterialTheme.colorScheme.onErrorContainer
                             )
                         }
                     }

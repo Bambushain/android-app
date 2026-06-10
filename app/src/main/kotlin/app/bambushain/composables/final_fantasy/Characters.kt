@@ -48,11 +48,11 @@ fun Characters(
             characters = res.body()!!
         }
         if (firstLoad && characters.isNotEmpty()) {
-            navigator.navigateTo(
-                ListDetailPaneScaffoldRole.Detail,
-                characters.first()
-            )
-            if (!isTablet) {
+            if (isTablet) {
+                navigator.navigateTo(
+                    ListDetailPaneScaffoldRole.Detail,
+                    characters.first()
+                )
                 onHideFab()
             }
         }
@@ -63,44 +63,67 @@ fun Characters(
     LaunchedEffect(Unit) {
         loadCharacters()
     }
+    LaunchedEffect(navigator.currentDestination?.contentKey) {
+        if (navigator.currentDestination?.contentKey == null) {
+            onShowFab()
+        }
+    }
 
-    NavigableListDetailPaneScaffold(navigator = navigator, listPane = {
-        AnimatedPane {
-            CharactersList(
-                onCharacterClicked = {
-                    coroutineScope.launch {
-                        navigator.navigateTo(
-                            ListDetailPaneScaffoldRole.Detail,
-                            it
-                        )
-                        if (!isTablet) {
-                            onHideFab()
+    NavigableListDetailPaneScaffold(
+        navigator = navigator,
+        listPane = {
+            AnimatedPane {
+                CharactersList(
+                    onCharacterClicked = {
+                        coroutineScope.launch {
+                            navigator.navigateTo(
+                                ListDetailPaneScaffoldRole.Detail,
+                                it
+                            )
+                            if (!isTablet) {
+                                onHideFab()
+                            }
+                        }
+                    },
+                    characters = characters,
+                    onLoadCharacters = {
+                        coroutineScope.launch { loadCharacters() }
+                    },
+                    isLoading = isLoading,
+                    fabClicked = fabClicked,
+                    onFabFinished = onFabFinished,
+                )
+            }
+        },
+        detailPane = {
+            AnimatedPane {
+                CharacterDetails(
+                    character = navigator.currentDestination?.contentKey,
+                    showBackButton = navigator.canNavigateBack(),
+                    onBackClicked = {
+                        coroutineScope.launch {
+                            navigator.navigateBack(
+                                backNavigationBehavior = BackNavigationBehavior.PopUntilScaffoldValueChange
+                            )
+                            onShowFab()
+                        }
+                    },
+                    onCharacterUpdated = {
+                        coroutineScope.launch {
+                            loadCharacters()
+                        }
+                    },
+                    onDeleteCharacter = {
+                        coroutineScope.launch {
+                            val res = charactersApi.deleteCharacter(it)
+                            if (res.isSuccessful) {
+                                loadCharacters()
+                                navigator.navigateBack()
+                            }
                         }
                     }
-                },
-                characters = characters,
-                onLoadCharacters = {
-                    coroutineScope.launch { loadCharacters() }
-                },
-                isLoading = isLoading,
-                fabClicked = fabClicked,
-                onFabFinished = onFabFinished,
-            )
+                )
+            }
         }
-    }, detailPane = {
-        AnimatedPane {
-            CharacterDetails(
-                character = navigator.currentDestination?.contentKey,
-                showBackButton = navigator.canNavigateBack(),
-                onBackClicked = {
-                    coroutineScope.launch {
-                        navigator.navigateBack(
-                            backNavigationBehavior = BackNavigationBehavior.PopUntilScaffoldValueChange
-                        )
-                        onShowFab()
-                    }
-                },
-            )
-        }
-    })
+    )
 }
