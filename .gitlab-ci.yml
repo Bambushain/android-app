@@ -34,6 +34,7 @@ read-secure-files:
   artifacts:
     paths:
       - $CI_PROJECT_DIR/.secure_files
+      - $CI_PROJECT_DIR/app/src/google-services.json
 
 lint-debug-app:
   stage: lint
