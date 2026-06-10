@@ -57,17 +57,8 @@ class MainActivity : ComponentActivity() {
         eventReminder.description = "Benachrichtigung wenn ein Event ansteht"
         eventReminder.enableVibration(true)
 
-        val groveInvites = NotificationChannel(
-            "grove-invites",
-            "Änderung der Einladungen",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        groveInvites.description =
-            "Benachrichtigung wenn die Einladungen aktiviert oder deaktiviert werden"
-        groveInvites.enableVibration(true)
-
         val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannels(listOf(eventReminder, groveInvites))
+        notificationManager.createNotificationChannels(listOf(eventReminder))
 
         setContent {
             MainComposable()

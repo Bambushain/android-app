@@ -54,6 +54,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.bambushain.R
 import app.bambushain.api.CalendarApi
 import app.bambushain.api.GrovesApi
@@ -68,6 +71,7 @@ import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.sse.TypedServerSentEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -101,12 +105,14 @@ fun Calendar(
     var events by remember { mutableStateOf(emptyList<GroveEvent>()) }
     var groveId by remember { mutableStateOf<Int?>(null) }
     var reloadTrigger by remember { mutableStateOf(true) }
+    var inForeground by remember { mutableStateOf(true) }
     var groves by remember { mutableStateOf(emptyList<Grove>()) }
 
     val server = stringResource(apiR.string.server)
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     val days = remember {
@@ -151,7 +157,29 @@ fun Calendar(
         }
     }
 
-    DisposableEffect(Unit) {
+    DisposableEffect(lifecycleOwner) {
+        val lifecycle = lifecycleOwner.lifecycle
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> {
+                    inForeground = false
+                }
+
+                Lifecycle.Event.ON_RESUME -> {
+                    inForeground = true
+                    reloadTrigger = true
+                }
+
+                else -> {}
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
+    DisposableEffect(inForeground) {
+        var job = null as Job?
         val client = HttpClient {
             install(SSE) {
                 maxReconnectionAttempts = 0
@@ -159,45 +187,46 @@ fun Calendar(
             }
         }
 
-        val json = Json { ignoreUnknownKeys = true }
-        val server =
-            server.toHttpUrlOrNull()!!.newBuilder().addPathSegments("/sse/event").build()
+        if (inForeground) {
+            val json = Json { ignoreUnknownKeys = true }
+            val server =
+                server.toHttpUrlOrNull()!!.newBuilder().addPathSegments("/sse/event").build()
 
-        val job = coroutineScope.launch {
-            while (isActive) {
-                try {
-                    client.sse({
-                        url(server.toString())
-                        header("Authorization", "Bearer ${context.getBambooToken()}")
-                    }, deserialize = { typeInfo, jsonString ->
-                        val serializer =
-                            json.serializersModule.serializer(typeInfo.kotlinType!!)
-                        json.decodeFromString(serializer, jsonString)!!
-                    }) {
-                        incoming.collect { event: TypedServerSentEvent<String> ->
-                            val data = deserialize<GroveEvent>(event.data)
-                            try {
-                                if (data != null && startDate != null && endDate != null &&
-                                    (data.startDate >= startDate!! || data.endDate <= endDate!!)
-                                ) {
-                                    reloadTrigger = true
+            job = coroutineScope.launch {
+                while (isActive) {
+                    try {
+                        client.sse({
+                            url(server.toString())
+                            header("Authorization", "Bearer ${context.getBambooToken()}")
+                        }, deserialize = { typeInfo, jsonString ->
+                            val serializer =
+                                json.serializersModule.serializer(typeInfo.kotlinType!!)
+                            json.decodeFromString(serializer, jsonString)!!
+                        }) {
+                            incoming.collect { event: TypedServerSentEvent<String> ->
+                                val data = deserialize<GroveEvent>(event.data)
+                                try {
+                                    if (data != null && startDate != null && endDate != null &&
+                                        (data.startDate >= startDate!! || data.endDate <= endDate!!)
+                                    ) {
+                                        reloadTrigger = true
+                                    }
+                                } catch (ex: Throwable) {
+                                    Log.e("Calender", "Failed to decode event: $data", ex)
                                 }
-                            } catch (ex: Throwable) {
-                                Log.e("Calender", "Failed to decode event: $data", ex)
                             }
                         }
+                    } catch (ex: CancellationException) {
+                        throw ex
+                    } catch (ex: Throwable) {
+                        Log.e("Calender", "SSE connection dropped, reconnecting...", ex)
+                        delay(2.seconds)
                     }
-                } catch (ex: CancellationException) {
-                    throw ex
-                } catch (ex: Throwable) {
-                    Log.e("Calender", "SSE connection dropped, reconnecting...", ex)
-                    delay(2.seconds)
                 }
             }
         }
-
         onDispose {
-            job.cancel()
+            job?.cancel()
             client.close()
         }
     }

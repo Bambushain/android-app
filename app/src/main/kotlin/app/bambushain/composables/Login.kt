@@ -21,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,21 +36,36 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.window.core.layout.WindowSizeClass
 import app.bambushain.Screens
 import app.bambushain.api.AuthenticationApi
+import app.bambushain.model.FirebaseLogin
 import app.bambushain.model.ForgotPassword
 import app.bambushain.model.Login
 import app.bambushain.model.LoginResult
 import app.bambushain.setBambooToken
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.koinInject
+import kotlin.math.log
 import kotlin.time.Clock
 
-private fun storeLoginResult(result: LoginResult, context: Context) {
+private fun loginToFirebase(
+    authenticationApi: AuthenticationApi,
+) {
+    FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+        CoroutineScope(Dispatchers.IO).launch {
+            authenticationApi.firebaseLogin(FirebaseLogin(token))
+        }
+    }
+}
+
+private fun storeLoginResult(result: LoginResult, context: Context, authenticationApi: AuthenticationApi) {
     context.setBambooToken(result.token)
+    loginToFirebase(authenticationApi)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -161,7 +175,7 @@ fun LoginScreen(
                 } else if (!result.isSuccessful) {
                     snackbarHostState.showSnackbar("Für die Anmeldedaten wurde kein Benutzer gefunden")
                 } else {
-                    storeLoginResult(result.body()!!, context)
+                    storeLoginResult(result.body()!!, context, authenticationApi)
                     navController.navigate(Screens.Calendar.name)
                 }
             } else {
@@ -175,7 +189,7 @@ fun LoginScreen(
                 if (!result.isSuccessful) {
                     snackbarHostState.showSnackbar("Der Zwei Faktor Code ist falsch")
                 } else {
-                    storeLoginResult(result.body()!!, context)
+                    storeLoginResult(result.body()!!, context, authenticationApi)
                     navController.navigate(Screens.Calendar.name)
                 }
             }

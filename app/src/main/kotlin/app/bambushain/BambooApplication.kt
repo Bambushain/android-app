@@ -5,10 +5,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
-
-val appModule = module {
-}
 
 class BambooApplication : Application(), KoinComponent {
     override fun onCreate() {
@@ -17,7 +13,7 @@ class BambooApplication : Application(), KoinComponent {
         startKoin {
             androidLogger()
             androidContext(this@BambooApplication)
-            modules(apiModule, appModule)
+            modules(apiModule)
         }
     }
 }

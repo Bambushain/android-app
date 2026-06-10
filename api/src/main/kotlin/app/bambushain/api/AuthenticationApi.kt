@@ -1,5 +1,6 @@
 package app.bambushain.api
 
+import app.bambushain.model.FirebaseLogin
 import app.bambushain.model.ForgotPassword
 import app.bambushain.model.Login
 import app.bambushain.model.LoginResult
@@ -79,4 +80,17 @@ interface AuthenticationApi {
     @POST("api/reset-password")
     suspend fun resetPassword(@Body resetPassword: ResetPassword): Response<Unit>
 
+    /**
+     * POST api/firebase/login
+     * Register the firebase token
+     *
+     * Responses:
+     *  - 204: Successful login
+     *  - 401: Invalid token
+     *
+     * @param firebaseLogin
+     * @return [Unit]
+     */
+    @POST("api/firebase/login")
+    suspend fun firebaseLogin(@Body firebaseLogin: FirebaseLogin): Response<Unit>
 }
