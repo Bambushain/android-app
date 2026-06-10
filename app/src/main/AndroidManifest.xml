@@ -1,66 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-            android:name=".BambooApplication"
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait"
-            android:supportsRtl="false"
-            android:theme="@style/Theme.Bambushain">
-
-        <meta-data
-                android:name="io.sentry.enabled"
-                android:value="false" />
-
-        <receiver
-                android:name=".notification.calendar.receiver.NotifyTodayReceiver"
-                android:enabled="true"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.DATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-                android:name=".notification.calendar.receiver.CleanupReceiver"
-                android:enabled="true"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.DATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-                android:name=".notification.calendar.receiver.StartEventNotificationReceiver"
-                android:enabled="true"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <service
-                android:name=".notification.calendar.EventNotificationService"
-                android:enabled="true"
-                android:exported="true"
-                android:foregroundServiceType="dataSync"
-                android:permission="android.permission.FOREGROUND_SERVICE_DATA_SYNC"></service>
-
+        android:name=".BambooApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Bambushain">
         <activity
-                android:name=".MainActivity"
-                android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".messaging.MessagesService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
-
 </manifest>

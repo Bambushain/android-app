@@ -1,6 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -8,42 +9,36 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        minSdk = 30
+        minSdk = 31
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
-    buildTypes {
-        debug {
-            isMinifyEnabled = false
-        }
-        release {
-            isMinifyEnabled = false
-        }
-    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_23
+        targetCompatibility = JavaVersion.VERSION_23
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
-    implementation(project(":models"))
+    implementation(platform(libs.io.insert.koin.koin.bom))
+    implementation(libs.io.insert.koin.koin.core)
+    implementation(libs.io.insert.koin.koin.android)
 
-    implementation("androidx.preference:preference:1.2.1")
-    implementation("com.google.code.gson:gson:2.14.0")
-    implementation("com.google.dagger:hilt-android:2.59.2")
-    implementation("com.launchdarkly:okhttp-eventsource:4.3.0")
-    implementation("com.squareup.okhttp3:okhttp:5.4.0")
-    implementation("com.squareup.retrofit2:adapter-rxjava3:3.0.0")
-    implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("io.coil-kt:coil:2.7.0")
-    implementation("io.coil-kt:coil-svg:2.7.0")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
-    implementation("io.reactivex.rxjava3:rxjava:3.1.12")
-    //noinspection AnnotationProcessorOnCompilePath
-    implementation("org.projectlombok:lombok:1.18.46")
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.datetime)
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.serialization.json)
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core)
 
-    annotationProcessor("com.google.dagger:hilt-compiler:2.59.2")
-    annotationProcessor("org.projectlombok:lombok:1.18.46")
+    implementation(platform(libs.retrofit2.bom))
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.converter.kotlinx)
+    implementation(libs.retrofit2.converter.scalars)
 }

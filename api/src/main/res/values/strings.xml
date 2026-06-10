@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="bambooAuthenticationToken">BAMBOO_AUTH_TOKEN</string>
+    <string name="server">https://bambushain.app</string>
 </resources>

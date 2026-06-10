@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="bambooInstance">testsystem</string>
+    <string name="server">http://imanuel-framework:8070</string>
+<!--    <string name="server">https://v4-review.bambushain.app</string>-->
 </resources>

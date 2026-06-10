@@ -1,29 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="seed">#598c79</color>
-    <color name="md_theme_primary">#006C53</color>
-    <color name="md_theme_onPrimary">#FFFFFF</color>
-    <color name="md_theme_primaryContainer">#81F8D0</color>
-    <color name="md_theme_onPrimaryContainer">#002117</color>
-    <color name="md_theme_secondary">#4C635A</color>
-    <color name="md_theme_onSecondary">#FFFFFF</color>
-    <color name="md_theme_secondaryContainer">#CEE9DC</color>
-    <color name="md_theme_onSecondaryContainer">#082018</color>
-    <color name="md_theme_tertiary">#3F6375</color>
-    <color name="md_theme_onTertiary">#FFFFFF</color>
-    <color name="md_theme_tertiaryContainer">#C3E8FE</color>
-    <color name="md_theme_onTertiaryContainer">#001E2B</color>
-    <color name="md_theme_error">#BA1A1A</color>
-    <color name="md_theme_errorContainer">#FFDAD6</color>
-    <color name="md_theme_onError">#FFFFFF</color>
-    <color name="md_theme_onErrorContainer">#410002</color>
-    <color name="md_theme_background">#FBFDF9</color>
-    <color name="md_theme_onBackground">#191C1B</color>
-    <color name="md_theme_surface">#FBFDF9</color>
-    <color name="md_theme_onSurface">#191C1B</color>
-    <color name="md_theme_surfaceVariant">#DBE5DF</color>
-    <color name="md_theme_onSurfaceVariant">#404944</color>
-    <color name="md_theme_outline">#707974</color>
-    <color name="md_theme_inverseOnSurface">#EFF1EE</color>
-    <color name="md_theme_inverseSurface">#2E312F</color>
-    <color name="md_theme_inversePrimary">#63DBB5</color>
+    <color name="primary">#166B54</color>
+    <color name="color_yiq_light">#EFF1EE</color>
+    <color name="color_yiq_dark">#191C1B</color>
+    <string-array name="colors">
+        <item>#E57373</item>
+        <item>#F06292</item>
+        <item>#BA68C8</item>
+        <item>#9575CD</item>
+        <item>#7986CB</item>
+        <item>#64B5F6</item>
+        <item>#4FC3F7</item>
+        <item>#4DD0E1</item>
+        <item>#4DB6AC</item>
+        <item>#81C784</item>
+        <item>#AED581</item>
+        <item>#DCE775</item>
+        <item>#FFF176</item>
+        <item>#FFD54F</item>
+        <item>#FFB74D</item>
+        <item>#FF8A65</item>
+    </string-array>
 </resources>
