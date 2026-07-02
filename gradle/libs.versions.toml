@@ -2,7 +2,7 @@
 agp = "9.2.1"
 kotlin = "2.4.0"
 activityCompose = "1.13.0"
-composeBom = "2026.06.00"
+composeBom = "2026.06.01"
 navigationCompose = "2.9.8"
 koinBom = "4.2.2"
 serialization = "2.4.0"
@@ -15,12 +15,12 @@ firebaseBom = "34.15.0"
 retrofit2 = "3.0.0"
 adaptiveNavigation = "1.2.0"
 dependencyAnalysis = "3.16.0"
-animationGraphics = "1.11.3"
+animationGraphics = "1.11.4"
 material3AdaptiveNavigationSuite = "1.4.0"
 lifecycleProcess = "2.11.0"
 ktor = "3.5.1"
 coil = "3.5.0"
-ui = "1.11.3"
+ui = "1.11.4"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
