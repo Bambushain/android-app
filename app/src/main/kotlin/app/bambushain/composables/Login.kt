@@ -38,41 +38,28 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.bambushain.Screens
 import app.bambushain.api.AuthenticationApi
-import app.bambushain.model.FirebaseLogin
 import app.bambushain.model.ForgotPassword
 import app.bambushain.model.Login
 import app.bambushain.model.LoginResult
 import app.bambushain.setBambooToken
-import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.koinInject
-import kotlin.math.log
 import kotlin.time.Clock
 
-private fun loginToFirebase(
-    authenticationApi: AuthenticationApi,
+private fun storeLoginResult(
+    result: LoginResult,
+    context: Context,
 ) {
-    FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
-        CoroutineScope(Dispatchers.IO).launch {
-            authenticationApi.firebaseLogin(FirebaseLogin(token))
-        }
-    }
-}
-
-private fun storeLoginResult(result: LoginResult, context: Context, authenticationApi: AuthenticationApi) {
     context.setBambooToken(result.token)
-    loginToFirebase(authenticationApi)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgotPasswordScreen(
     navController: NavController,
-    authenticationApi: AuthenticationApi = koinInject()
+    authenticationApi: AuthenticationApi = koinInject(),
 ) {
     var email by remember { mutableStateOf("") }
 
@@ -100,10 +87,8 @@ fun ForgotPasswordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Passwort vergessen") }
-            )
-        }
-    ) { scaffoldPadding ->
+                title = { Text("Passwort vergessen") })
+        }) { scaffoldPadding ->
         Surface(
             modifier = Modifier
                 .padding(scaffoldPadding)
@@ -129,12 +114,10 @@ fun ForgotPasswordScreen(
                         keyboardActions = KeyboardActions(
                             {
                                 requestLink()
-                            }
-                        ),
+                            }),
                     )
                     Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
                     ) {
                         Button(onClick = {
                             requestLink()
@@ -152,7 +135,7 @@ fun ForgotPasswordScreen(
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authenticationApi: AuthenticationApi = koinInject()
+    authenticationApi: AuthenticationApi = koinInject(),
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -162,7 +145,7 @@ fun LoginScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current;
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
     val login = {
@@ -175,21 +158,19 @@ fun LoginScreen(
                 } else if (!result.isSuccessful) {
                     snackbarHostState.showSnackbar("Für die Anmeldedaten wurde kein Benutzer gefunden")
                 } else {
-                    storeLoginResult(result.body()!!, context, authenticationApi)
+                    storeLoginResult(result.body()!!, context)
                     navController.navigate(Screens.Calendar.name)
                 }
             } else {
                 val result = authenticationApi.login(
                     Login(
-                        email,
-                        password,
-                        twoFactorCode
+                        email, password, twoFactorCode
                     )
                 )
                 if (!result.isSuccessful) {
                     snackbarHostState.showSnackbar("Der Zwei Faktor Code ist falsch")
                 } else {
-                    storeLoginResult(result.body()!!, context, authenticationApi)
+                    storeLoginResult(result.body()!!, context)
                     navController.navigate(Screens.Calendar.name)
                 }
             }
@@ -200,14 +181,10 @@ fun LoginScreen(
         Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = {
-            TopAppBar(
-                title = { Text("Anmelden") }
-            )
-        }
-    ) { scaffoldPadding ->
+    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, topBar = {
+        TopAppBar(
+            title = { Text("Anmelden") })
+    }) { scaffoldPadding ->
         Surface(
             modifier = Modifier
                 .padding(scaffoldPadding)
@@ -265,19 +242,16 @@ fun LoginScreen(
                                     if (loginInProgress) {
                                         login()
                                     }
-                                }
-                            ),
+                                }),
                             singleLine = true
                         )
                     }
                     Row(
-                        horizontalArrangement =
-                            if (loginInProgress) {
-                                Arrangement.End
-                            } else {
-                                Arrangement.SpaceBetween
-                            },
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = if (loginInProgress) {
+                            Arrangement.End
+                        } else {
+                            Arrangement.SpaceBetween
+                        }, modifier = Modifier.fillMaxWidth()
                     ) {
                         if (!loginInProgress) {
                             FilledTonalButton(onClick = {

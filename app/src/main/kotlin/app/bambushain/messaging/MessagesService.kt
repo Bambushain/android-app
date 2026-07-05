@@ -22,7 +22,7 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.android.inject
 
 @Serializable
-data class EventReminder(val type: String, val payload: GroveEvent) {}
+data class EventReminder(val type: String, val payload: GroveEvent)
 
 class MessagesService : FirebaseMessagingService() {
 
@@ -64,9 +64,9 @@ class MessagesService : FirebaseMessagingService() {
         notificationManager?.notify("event", message.payload.id, notification)
     }
 
-    override fun onNewToken(token: String) {
+    override fun onRegistered(installationId: String) {
         coroutineScope.launch {
-            authenticationApi.firebaseLogin(FirebaseLogin(token))
+            authenticationApi.firebaseLogin(FirebaseLogin(installationId))
         }
     }
 }
