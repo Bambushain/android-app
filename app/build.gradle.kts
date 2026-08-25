@@ -125,7 +125,6 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
 
     implementation(platform(libs.io.insert.koin.koin.bom))
-    implementation(libs.androidx.ui)
     implementation(libs.io.insert.koin.koin.core)
     implementation(libs.io.insert.koin.koin.compose)
     implementation(libs.io.insert.koin.koin.android)
